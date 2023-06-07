@@ -1,0 +1,13 @@
+.elements__element {
+	background-color: #fff;
+	border-radius: 10px;
+	overflow: hidden;
+	margin-bottom: 3px;
+	min-height: 362px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	width: 282px;
+	justify-self: center;
+	align-self: center;
+}

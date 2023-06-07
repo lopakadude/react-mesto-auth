@@ -1,0 +1,17 @@
+.profile__avatar-cover {
+	position: absolute;
+	width: 120px;
+	height: 120px;
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 2;
+	border-radius: 50%;
+	transition: background-color 0.5s ease;
+}
+
+.profile__avatar-cover:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+	background-image: url(../../../Images/Profile/AvatarEdit.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+}

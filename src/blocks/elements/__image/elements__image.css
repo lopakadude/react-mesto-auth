@@ -1,0 +1,10 @@
+.elements__image {
+	width: 100%;
+	object-fit: cover;
+	object-position: center;
+	margin-bottom: 23px;
+	aspect-ratio: 1 / 1;
+	cursor: pointer;
+	background-color: #000;
+	color: #fff;
+}

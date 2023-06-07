@@ -1,0 +1,45 @@
+.popup__mission {
+	color: #000;
+	font-weight: 900;
+	font-size: 24px;
+	line-height: 29px;
+	padding: 0;
+	margin: 2.65vw 5vw 4.218vw 2.8125vw;
+}
+
+
+@media screen and (min-width:1280px) {
+	.popup__mission {
+		margin: 34px 0 40px 36px;
+	}
+}
+
+@media screen and (max-width:750px) {
+	.popup__mission {
+		font-size: 20px;
+		line-height: 24px;
+	}
+}
+
+@media screen and (max-width:625px) {
+	.popup__mission {
+		font-size: 18px;
+		line-height: 22px;
+	}
+}
+
+@media screen and (max-width:576px) {
+	.popup__mission {
+		width: 74.375vw;
+		margin: 25px auto 67px auto;
+		font-size: 24px;
+		line-height: 29px;
+	}
+}
+
+@media screen and (max-width:376px) {
+	.popup__mission {
+		font-size: 18px;
+		line-height: 22px;
+	}
+}

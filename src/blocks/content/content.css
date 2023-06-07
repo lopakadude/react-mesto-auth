@@ -1,0 +1,17 @@
+.content {
+	width: 68.75%;
+	margin: 0 auto;
+	flex: 1 0 auto;
+}
+
+@media screen and (min-width: 1280px) {
+	.content {
+		width: 880px;
+	}
+}
+
+@media screen and (max-width:576px) {
+	.content {
+		width: 88.125%;
+	}
+}
