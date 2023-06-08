@@ -1,0 +1,35 @@
+.popup__tooltip-message {
+	font-style: normal;
+	font-weight: 900;
+	font-size: 24px;
+	line-height: 29px;
+	text-align: center;
+	color: #000000;
+	width: 358px;
+	padding: 0;
+	margin: 0 auto 60px auto;
+}
+
+@media screen and (max-width:1071px) {
+	.popup__tooltip-message {
+		font-size: 20px;
+		line-height: 24px;
+		width: 86.25%;
+	}
+}
+
+@media screen and (max-width:793px) {
+	.popup__tooltip-message {
+		font-size: 17px;
+		line-height: 19px;
+		width: 76.25%;
+	}
+}
+
+@media screen and (max-width:576px) {
+	.popup__tooltip-message {
+		font-size: 20px;
+		line-height: 24px;
+		width: 76.25%;
+	}
+}

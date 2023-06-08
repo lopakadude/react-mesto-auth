@@ -1,0 +1,17 @@
+.auth__form {
+	width: 27.96vw;
+	display: flex;
+	flex-direction: column;
+}
+
+@media screen and (min-width: 1280px) {
+	.auth__form {
+		width: 358px;
+	}
+}
+
+@media screen and (max-width: 793px) {
+	.auth__form {
+		width: 81.25vw;
+	}
+}

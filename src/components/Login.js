@@ -1,20 +1,21 @@
-import { useState } from "react";
+import  useForm  from '../hooks/useForm';
+import {useEffect} from 'react';
 
 export default function Login(props) {
-  const [email, setEmail] = useState("");
-  const [password, setpassword] = useState("");
+	const {values, handleChange, setValues} = useForm({});
 
-  function handleEmailChange(e) {
-    setEmail(e.target.value);
-  }
-  function handlePasswordChange(e) {
-    setpassword(e.target.value);
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    props.onLogin({
+			email: values.email,
+			password: values.password
+		});
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    props.onLogin(email, password);
-  }
+	useEffect(() => {
+		setValues({ email: '', password: ''})
+  }, []);
+
 
   return (
     <>      
@@ -22,24 +23,24 @@ export default function Login(props) {
         <h2 className="auth__title">Вход</h2>
         <form className="auth__form" onSubmit={handleSubmit}>
           <input
-            onChange={handleEmailChange}
+            onChange={handleChange}
             className="auth__form-input"
             placeholder="Email"
             name="email"
             type="email"
             required
-            value={email || ""}
+            value={values.email || ""}
           ></input>
           <input
-            onChange={handlePasswordChange}
+            onChange={handleChange}
             className="auth__form-input"
             placeholder="Пароль"
             name="password"
             type="password"
             required
-            value={password || ""}
+            value={values.password || ""}
           ></input>
-          <button className="auth__form-submit-btn" type="submit">
+          <button className="auth__submit" type="submit">
             Войти
           </button>
         </form>

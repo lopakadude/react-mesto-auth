@@ -1,22 +1,21 @@
-import { useState } from "react";
+import  useForm  from '../hooks/useForm';
+import {useEffect} from 'react';
 import { Link } from 'react-router-dom'
 
 export default function Register(props) {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-
-	function handleEmailChange(evt) {
-		setEmail(evt.target.value);
-	}
-
-	function handlePasswordChange(evt) {
-		setPassword(evt.target.value);
-	}
+	const {values, handleChange, setValues} = useForm({});
 
 	function handleSubmit(evt) {
 		evt.preventDefault();
-		props.onRegister(email, password);
+		props.onRegister({
+			email: values.email,
+			password: values.password
+		});
 	}
+
+	useEffect(() => {
+		setValues({ email: '', password: ''})
+  }, []);
 
 	return (
 		<section className="auth">
@@ -28,8 +27,8 @@ export default function Register(props) {
 					name="email"
 					type="email"
 					required
-					value={email || ""}
-					onChange={handleEmailChange}
+					value={values.email || ""}
+					onChange={handleChange}
 					autoComplete="off"
 				/>
 				<input
@@ -38,20 +37,20 @@ export default function Register(props) {
 					name="password"
 					type="password"
 					required
-					value={password || ""}
-					onChange={handlePasswordChange}
+					value={values.password || ""}
+					onChange={handleChange}
 					autoComplete="off"
 				/>
 				<button
-					className="auth__form-submit-btn auth__form-submit-btn_size"
+					className="auth__submit"
 					type="submit">
 					Зарегистрироваться
 				</button>
 				<div className="auth__signup">
-					<p className="auth__signup_text">Уже зарегистрированы?</p>
+					<span className="auth__signup-text">Уже зарегистрированы?</span>
 					<Link
-						to="sign-in"
-						className="auth__signup_link">
+						to="/sign-in"
+						className="auth__signup-link">
 						Войти
 					</Link>
 				</div>

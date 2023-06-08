@@ -1,0 +1,10 @@
+.header__link_type_out {
+	color: #A9A9A9;
+	margin-left: 24px;
+}
+
+@media screen and (max-width:793px) {
+	.header__link {
+		margin-left: 10px;
+	}
+}

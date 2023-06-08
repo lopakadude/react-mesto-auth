@@ -1,0 +1,5 @@
+@media screen and (max-width:793px) {
+	.popup__container_type_tooltip {
+		width: 87.5vw;
+	}
+}

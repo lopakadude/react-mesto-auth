@@ -14,8 +14,8 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import Login from './Login';
 import Register from './Register';
-import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
-import ProtectedRoute from './ProtectedRoute';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { ProtectedRoute } from './ProtectedRoute'
 import InfoToolTip from './InfoToolTip';
 import * as auth from '../utils/Auth';
 
@@ -158,25 +158,25 @@ function App() {
 		}
 	}, [navigate]);
 
-	function handleRegistrationSubmit(email, password) {
+	function handleRegistrationSubmit({email, password}) {
 		auth
-			.registration(email, password)
+			.registration({email, password})
 			.then((res) => {
-				setInfoToolTipPopupOpen(true);
 				setIsSuccess(true);
+				setInfoToolTipPopupOpen(true);
 				navigate('/sign-in', { replace: true });
 			})
 			.catch((err) => {
 				console.log(`Ошибка: ${err}`);
-				setInfoToolTipPopupOpen(true);
 				setIsSuccess(false);
+				setInfoToolTipPopupOpen(true);
 			});
 	}
 
-	function handleLoginSubmit(email, password) {
+	function handleLoginSubmit({email, password}) {
 		auth
-			.login(email, password)
-			.then((res) => {
+			.login({email, password})
+			.then(() => {
 				setIsLoggedIn(true);
 				setEmail(email);
 				navigate('/', { replace: true });
@@ -186,41 +186,49 @@ function App() {
 			})
 	}
 
+	function handleSignOut() {
+    localStorage.removeItem('jwt');
+    setIsLoggedIn(false);
+		navigate('/sign-in', { replace: true });
+  }
+
 
 	return (
 		<IsLoading.Provider value={isLoading}>
 			<CurrentUserContext.Provider value={currentUser}>
-				<main
+				<body
 					className="page"
 				>
 					<Header
 						email={email}
-						isLoggedIn={isLoggedIn} />
+						isLoggedIn={isLoggedIn} 
+						onSignOut={handleSignOut}/>
 					<Routes>
-						<ProtectedRoute
-							exact
+						<Route
 							path="/"
-							isLoggedIn={isLoggedIn}
-							onEditAvatar={handleEditAvatarClick}
-							onEditProfile={handleEditProfileClick}
-							onAddPlace={handleAddPlaceClick}
-							onCardClick={handleCardClick}
-							onCardLike={handleCardLike}
-							onCardDelete={handleCardDelete}
-							cards={cards}
-							component={Main}
+							element={(
+								<ProtectedRoute
+									isLoggedIn={isLoggedIn}>
+									<>
+										<Main
+											onEditProfile={handleEditProfileClick}
+											onAddPlace={handleAddPlaceClick}
+											onEditAvatar={handleEditAvatarClick}
+											onCardClick={handleCardClick}
+											onCardLike={handleCardLike}
+											onCardDelete={handleCardDelete}
+											cards={cards}
+										/>
+										<Footer />
+									</>
+								</ProtectedRoute>
+							)}
 						/>
-						<Route path="/sign-in">
-							<Login onLogin={handleLoginSubmit} />
-						</Route>
-						<Route path="/sign-up">
-							<Register onRegister={handleRegistrationSubmit} />
-						</Route>
-						<Route>
-							{isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />}
-						</Route>
+						<Route path="/sign-in"
+							element={<Login onLogin={handleLoginSubmit} />} />
+						<Route path="/sign-up" element={<Register
+							onRegister={handleRegistrationSubmit} />} />
 					</Routes>
-					{isLoggedIn && <Footer />}
 					<EditProfilePopup
 						isOpen={isEditProfilePopupOpen}
 						onClose={closeAllPopups}
@@ -247,11 +255,12 @@ function App() {
 						onClose={closeAllPopups}
 					/>
 					<InfoToolTip
+						name="tooltip"
 						isOpen={isInfoToolTipPopupOpen}
 						onClose={closeAllPopups}
 						isSuccess={isSuccess}
 					/>
-				</main>
+				</body>
 			</CurrentUserContext.Provider>
 		</IsLoading.Provider>
 	);

@@ -1,0 +1,14 @@
+.auth__signup {
+	display: flex;
+	justify-content: center;
+	padding: 0;
+	margin: 15px 0 0 0;
+	font-size: 14px;
+	line-height: 17px;
+}
+
+@media screen and (max-width: 793px) {
+	.auth__signup {
+		margin-top: 20px;
+	}
+}

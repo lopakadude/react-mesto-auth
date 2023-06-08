@@ -7,7 +7,7 @@ function checkResponse(res) {
   return Promise.reject(`${res.status}`);
 }
 
-export const registration = (email, password) => {
+export const registration = (inputValues) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
@@ -15,22 +15,22 @@ export const registration = (email, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      email: email,
-      password: password,
+      email: inputValues.email,
+      password: inputValues.password,
     }),
   })
     .then(checkResponse)
 };
 
-export const login = (email, password) => {
+export const login = (inputValues) => {
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      email: email,
-      password: password,
+      email: inputValues.email,
+      password: inputValues.password,
     }),
   })
     .then(checkResponse)
