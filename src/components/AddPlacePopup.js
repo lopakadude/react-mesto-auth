@@ -1,11 +1,11 @@
 import {useEffect,useContext } from 'react';
 import PopupWithForm from "./PopupWithForm";
-import { IsLoading } from "../contexts/IsLoading";
+import { AppContext} from "../contexts/AppContext";
 import  useForm  from '../hooks/useForm';
 
 export default function AddPlacePopup(props) {
 	const {values, handleChange, setValues} = useForm({});
-	const isLoading = useContext(IsLoading);
+	const isLoading = useContext(AppContext).isLoading
 
 	function handleSubmit(evt) {
 		evt.preventDefault();
@@ -25,7 +25,6 @@ export default function AddPlacePopup(props) {
 			name="newCard"
 			title="Новое место"
 			isOpen={props.isOpen}
-			onClose={props.onClose}
 			onSubmit={handleSubmit}
 			submit={isLoading ? "Создание" : "Создать"}>
 			<input

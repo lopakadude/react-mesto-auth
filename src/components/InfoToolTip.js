@@ -1,14 +1,17 @@
 import successIcon from '../Images/Auth/successIcon.svg';
 import failIcon from '../Images/Auth/failIcon.svg';
 import { usePopupClose } from "../hooks/usePoppupClose";
+import { useContext } from 'react';
+import { AppContext} from "../contexts/AppContext";
 
-export default function InfoToolTip({name, isOpen, onClose, isSuccess}) {
-	usePopupClose(isOpen, onClose);
+export default function InfoToolTip({name, isOpen, isSuccess}) {
+	const closeAllPopups = useContext(AppContext).closeAllPopups
+	usePopupClose(isOpen, closeAllPopups);
 	return (
 		<div 
 		className={`popup popup_type_${name} ${isOpen ? 'popup_opened' : ''}`}
 		>
-			<div className="popup__container popup__container_type_tooltip">
+			<div className="popup__container">
 				{isSuccess ? (
 					<>
 						<img
@@ -33,7 +36,7 @@ export default function InfoToolTip({name, isOpen, onClose, isSuccess}) {
 					</>
 				)}
 				<button
-					onClick={onClose}
+					onClick={closeAllPopups}
 					type="button"
 					className="popup__close"/>
 			</div>

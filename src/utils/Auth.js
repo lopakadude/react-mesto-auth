@@ -7,33 +7,35 @@ function checkResponse(res) {
   return Promise.reject(`${res.status}`);
 }
 
+function request(endpoint, options) {
+	return fetch(`${BASE_URL}/${endpoint}`, options).then(checkResponse)
+}
+
 export const registration = (inputValues) => {
-  return fetch(`${BASE_URL}/signup`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: inputValues.email,
-      password: inputValues.password,
-    }),
-  })
-    .then(checkResponse)
+		return request(`signup`, {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				email: inputValues.email,
+				password: inputValues.password,
+			}),
+		})
 };
 
 export const login = (inputValues) => {
-  return fetch(`${BASE_URL}/signin`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: inputValues.email,
-      password: inputValues.password,
-    }),
-  })
-    .then(checkResponse)
+		return request(`signin`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				email: inputValues.email,
+				password: inputValues.password,
+			}),
+		})
     .then((data) => {
       if (data.token) {
         localStorage.setItem("jwt", data.token);
@@ -43,13 +45,12 @@ export const login = (inputValues) => {
 };
 
 export const checkToken = (jwt) => {
-  return fetch(`${BASE_URL}/users/me`, {
-    method: "GET",
-    headers: {
-			'Accept': 'application/json',
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-    },
-  })
-    .then(checkResponse)
+		return request(`users/me`, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${jwt}`,
+			},
+		})
 };

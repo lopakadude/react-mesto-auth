@@ -1,11 +1,11 @@
 import PopupWithForm from "./PopupWithForm";
 import { useEffect, useContext } from 'react';
-import { IsLoading } from "../contexts/IsLoading";
+import { AppContext} from "../contexts/AppContext";
 import  useForm  from '../hooks/useForm';
 
 export default function EditAvatarPopup(props) {
 	const {values, handleChange, setValues} = useForm({});
-	const isLoading = useContext(IsLoading);
+	const isLoading = useContext(AppContext).isLoading
 	function handleSubmit(evt) {
 		evt.preventDefault();
 		props.onUpdateAvatar({
@@ -22,11 +22,10 @@ export default function EditAvatarPopup(props) {
 			name="avatar"
 			title="Обновить аватар"
 			isOpen={props.isOpen}
-			onClose={props.onClose}
 			onSubmit={handleSubmit}
 			submit={isLoading? "Сохранение" : "Сохранить"}>
 			<input
-				value={values.avatar}
+				value={values.avatar || ''}
 				onChange={handleChange}
 				type="url"
 				id="linkAvatarInput"

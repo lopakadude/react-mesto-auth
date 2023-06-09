@@ -8,7 +8,7 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import { api } from '../utils/API';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { IsLoading } from '../contexts/IsLoading';
+import { AppContext} from '../contexts/AppContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
@@ -41,25 +41,16 @@ function App() {
 			.then((data) => {
 				setCurrentUser(data);
 			})
-			.catch((err) => console.log(`Ошибка: ${err}`))
+			.catch(console.error)
 	}, []);
 
 	useEffect(() => {
 		api
 			.getInitialCards()
 			.then((data) => {
-				const cards = data.map((card) => {
-					return {
-						link: card.link,
-						name: card.name,
-						likes: card.likes,
-						_id: card._id,
-						owner: card.owner
-					};
-				});
-				setCards(cards);
+				setCards(data);
 			})
-			.catch((err) => console.log(`Ошибка: ${err}`))
+			.catch(console.error)
 	}, [])
 
 	function handleEditAvatarClick() {
@@ -81,7 +72,7 @@ function App() {
 			.then((newCard) => {
 				setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
 			})
-			.catch((err) => console.log(`Ошибка: ${err}`));
+			.catch(console.error)
 	}
 
 	function handleCardDelete(card) {
@@ -89,48 +80,39 @@ function App() {
 			.then(res => {
 				setCards((state) => state.filter((c) => c._id !== card._id));
 			})
-			.catch((err) => {
-				console.log(`Ошибка: ${err}`);
-			})
+			.catch(console.error)
 	}
 
+
+function handleSubmit(request) {
+	setIsLoading(true);
+	request()
+		.then(closeAllPopups)
+		.catch(console.error)
+		.finally(() => setIsLoading(false));
+}
+
+
 	function handleUpdateUser({ name, about }) {
-		setIsLoading(!isLoading);
-		api.setUserInfo({ name: name, about: about })
-			.then((res) => {
-				setCurrentUser(res)
-				closeAllPopups()
-			})
-			.catch((err) => {
-				console.log(`Ошибка: ${err}`);
-			})
-			.finally(() => setIsLoading(false));
+			function makeRequest() {
+				return api.setUserInfo({ name: name, about: about }).then(setCurrentUser);
+			}
+			handleSubmit(makeRequest);
 	}
 
 	function handleUpdateAvatar(avatar) {
-		setIsLoading(!isLoading);
-		api.setChangeAvatar(avatar)
-			.then((res) => {
-				setCurrentUser(res)
-				closeAllPopups()
-			})
-			.catch((err) => {
-				console.log(`Ошибка: ${err}`);
-			})
-			.finally(() => setIsLoading(false));
+			function makeRequest() {
+				return api.setChangeAvatar(avatar).then(setCurrentUser);
+			}
+			handleSubmit(makeRequest);
 	}
 
 	function handleAddPlaceSubmit({ name, link }) {
-		setIsLoading(!isLoading);
-		api.postNewCard({ name, link })
-			.then((newCard) => {
-				setCards([newCard, ...cards]);
-				closeAllPopups()
-			})
-			.catch((err) => {
-				console.log(`Ошибка: ${err}`);
-			})
-			.finally(() => setIsLoading(false));
+			function makeRequest() {
+				return api.postNewCard({ name, link }).then((newCard) => {
+					setCards([newCard, ...cards])})
+			}
+			handleSubmit(makeRequest);
 	}
 
 	function closeAllPopups() {
@@ -152,9 +134,7 @@ function App() {
 					setEmail(res.data.email);
 					navigate('/', { replace: true });
 				})
-				.catch((err) => {
-					console.log(`Ошибка: ${err}`);
-				})
+				.catch(console.error)
 		}
 	}, [navigate]);
 
@@ -163,14 +143,15 @@ function App() {
 			.registration({email, password})
 			.then((res) => {
 				setIsSuccess(true);
-				setInfoToolTipPopupOpen(true);
 				navigate('/sign-in', { replace: true });
 			})
-			.catch((err) => {
-				console.log(`Ошибка: ${err}`);
+			.catch(() => {
+				console.error();
 				setIsSuccess(false);
-				setInfoToolTipPopupOpen(true);
-			});
+			})
+			.finally(() => {
+				setInfoToolTipPopupOpen(true) 
+			})
 	}
 
 	function handleLoginSubmit({email, password}) {
@@ -181,9 +162,7 @@ function App() {
 				setEmail(email);
 				navigate('/', { replace: true });
 			})
-			.catch((err) => {
-				console.log(`Ошибка: ${err}`);
-			})
+			.catch(console.error)
 	}
 
 	function handleSignOut() {
@@ -194,9 +173,9 @@ function App() {
 
 
 	return (
-		<IsLoading.Provider value={isLoading}>
+		<AppContext.Provider value={{isLoading, closeAllPopups}}>
 			<CurrentUserContext.Provider value={currentUser}>
-				<body
+				<div
 					className="page"
 				>
 					<Header
@@ -231,38 +210,32 @@ function App() {
 					</Routes>
 					<EditProfilePopup
 						isOpen={isEditProfilePopupOpen}
-						onClose={closeAllPopups}
 						onUpdateUser={handleUpdateUser}
 					/>
 					<AddPlacePopup
 						isOpen={isAddPlacePopupOpen}
-						onClose={closeAllPopups}
 						onAddPlace={handleAddPlaceSubmit}>
 					</AddPlacePopup>
 					<EditAvatarPopup
 						isOpen={isEditAvatarPopupOpen}
-						onClose={closeAllPopups}
 						onUpdateAvatar={handleUpdateAvatar} />
 					<PopupWithForm
 						name="delete"
 						title="Вы уверены?"
-						onClose={closeAllPopups}
 						submit="Да">
 					</PopupWithForm>
 					<ImagePopup
 						name="bigImg"
 						card={selectedCard}
-						onClose={closeAllPopups}
 					/>
 					<InfoToolTip
 						name="tooltip"
 						isOpen={isInfoToolTipPopupOpen}
-						onClose={closeAllPopups}
 						isSuccess={isSuccess}
 					/>
-				</body>
+				</div>
 			</CurrentUserContext.Provider>
-		</IsLoading.Provider>
+		</AppContext.Provider>
 	);
 }
 

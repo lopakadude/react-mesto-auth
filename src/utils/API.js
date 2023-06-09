@@ -4,7 +4,7 @@ class Api {
 		this.headers = settings.headers;
 	}
 
-	_response(res) {
+	_checkResponse(res) {
 		if (res.ok) {
 			return res.json();
 		}
@@ -12,18 +12,20 @@ class Api {
 		return Promise.reject(`Ошибка: ${res.status}`);
 	}
 
+	_request(endpoint, options) {
+		return fetch(`${this.baseUrl}/${endpoint}`, options)
+			.then(this._checkResponse);
+	};
+
 	getUserInfo() {
-		return fetch(`${this.baseUrl}/users/me`, {
+		return this._request(`users/me`, {
 			method: 'GET',
 			headers: this.headers,
 		})
-			.then((res) =>
-				this._response(res)
-			)
 	}
 
 	setUserInfo(inputValues) {
-		return fetch(`${this.baseUrl}/users/me`, {
+		return this._request(`users/me`, {
 			method: 'PATCH',
 			headers: this.headers,
 			body: JSON.stringify({
@@ -31,78 +33,55 @@ class Api {
 				about: inputValues.about
 			})
 		})
-			.then(res => 
-				this._response(res)
-			)
-
 	}
 
 	setChangeAvatar(inputValues) {
-		return fetch(`${this.baseUrl}/users/me/avatar`, {
+		return this._request(`users/me/avatar`, {
 			method: 'PATCH',
 			headers: this.headers,
 			body: JSON.stringify({
 				avatar: inputValues.avatar
 			})
 		})
-			.then(res => 
-				this._response(res)
-			)
-
 	}
 
 	getInitialCards() {
-		return fetch(`${this.baseUrl}/cards`, {
+		return this._request(`cards`, {
 			method: 'GET',
 			headers: this.headers
 		})
-			.then(res => 
-				this._response(res)
-			)
 	}
 
 	postNewCard(inputValues) {
-		return fetch(`${this.baseUrl}/cards`, {
-			method: 'POST',
-			headers: this.headers,
-			body: JSON.stringify({
-				name: inputValues.name,
-				link: inputValues.link
+			return this._request(`cards`, {
+				method: 'POST',
+				headers: this.headers,
+				body: JSON.stringify({
+					name: inputValues.name,
+					link: inputValues.link
+				})
 			})
-		})
-			.then(res => 
-				this._response(res)
-			)
 	}
 
 	deleteCard(cardId) {
-		return fetch(`${this.baseUrl}/cards/${cardId}`, {
-			method: 'DELETE',
-			headers: this.headers
-		})
-			.then(res => 
-				this._response(res)
-			)
+			return this._request(`cards/${cardId}`, {
+				method: 'DELETE',
+				headers: this.headers
+			})
 	}
 
 	_likeCard(cardId) {
-		return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
-			method: 'PUT',
-			headers: this.headers
-		})
-			.then(res => 
-				this._response(res)
-			)
+			return this._request(`cards/${cardId}/likes`, {
+				method: 'PUT',
+				headers: this.headers
+			})
 	}
 
 	_unlikeCard(cardId) {
-		return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
-			method: 'DELETE',
-			headers: this.headers
-		})
-			.then(res => 
-				this._response(res)
-			)
+			return this._request(`cards/${cardId}/likes`, {
+				method: 'DELETE',
+				headers: this.headers
+			})
 	}
 
 	changeLikeCardStatus(cardId, isLiked) {
@@ -111,9 +90,9 @@ class Api {
 		}
 		else {
 			return this._unlikeCard(cardId)
-	}}
+		}
+	}
 }
-
 
 export const api = new Api({
 	baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-64',

@@ -1,12 +1,12 @@
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { useContext, useEffect } from 'react';
-import { IsLoading } from "../contexts/IsLoading";
+import { AppContext} from "../contexts/AppContext";
 import  useForm  from '../hooks/useForm';
 
 export default function EditProfilePopup(props) {
 	const currentUser = useContext(CurrentUserContext);
-	const isLoading = useContext(IsLoading);
+	const isLoading = useContext(AppContext).isLoading
 	const {values, handleChange, setValues} = useForm({});
 
 	useEffect(() => {
@@ -28,7 +28,6 @@ export default function EditProfilePopup(props) {
 			name="profile"
 			title="Редактировать профиль"
 			isOpen={props.isOpen}
-			onClose={props.onClose}
 			onSubmit={handleSubmit}
 			submit={isLoading ? "Сохранение" : "Сохранить"}>
 			<input

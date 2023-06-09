@@ -1,7 +1,10 @@
 import { usePopupClose } from "../hooks/usePoppupClose";
+import {useContext } from 'react';
+import { AppContext} from "../contexts/AppContext";
 
-export default function PopupWithForm({name, title, isOpen, onClose, onSubmit, submit, children}) {
-	usePopupClose(isOpen, onClose);
+export default function PopupWithForm({name, title, isOpen, onSubmit, submit, children}) {
+	const closeAllPopups = useContext(AppContext).closeAllPopups
+	usePopupClose(isOpen, closeAllPopups);
 
 	return (
 		<div 
@@ -9,11 +12,11 @@ export default function PopupWithForm({name, title, isOpen, onClose, onSubmit, s
 		>
 			<div className="popup__container">
 				<button
-					onClick={onClose}
+					onClick={closeAllPopups}
 					type="button"
 					className="popup__close"/>
 				<h2
-					className="popup__mission popup__mission_content_delete">{title}
+					className="popup__mission">{title}
 				</h2>
 				<form
 					name={name}
