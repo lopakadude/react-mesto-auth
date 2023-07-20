@@ -53,35 +53,35 @@ class Api {
 	}
 
 	postNewCard(inputValues) {
-			return this._request(`cards`, {
-				method: 'POST',
-				headers: this.headers,
-				body: JSON.stringify({
-					name: inputValues.name,
-					link: inputValues.link
-				})
+		return this._request(`cards`, {
+			method: 'POST',
+			headers: this.headers,
+			body: JSON.stringify({
+				name: inputValues.name,
+				link: inputValues.link
 			})
+		})
 	}
 
 	deleteCard(cardId) {
-			return this._request(`cards/${cardId}`, {
-				method: 'DELETE',
-				headers: this.headers
-			})
+		return this._request(`cards/${cardId}`, {
+			method: 'DELETE',
+			headers: this.headers
+		})
 	}
 
 	_likeCard(cardId) {
-			return this._request(`cards/${cardId}/likes`, {
-				method: 'PUT',
-				headers: this.headers
-			})
+		return this._request(`cards/${cardId}/likes`, {
+			method: 'PUT',
+			headers: this.headers
+		})
 	}
 
 	_unlikeCard(cardId) {
-			return this._request(`cards/${cardId}/likes`, {
-				method: 'DELETE',
-				headers: this.headers
-			})
+		return this._request(`cards/${cardId}/likes`, {
+			method: 'DELETE',
+			headers: this.headers
+		})
 	}
 
 	changeLikeCardStatus(cardId, isLiked) {
@@ -95,9 +95,8 @@ class Api {
 }
 
 export const api = new Api({
-	baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-64',
+	baseUrl: 'https://api.express.lopakadude.nomoredomains.xyz',
 	headers: {
-		authorization: '1ce6b059-9750-4713-9aa7-ca765112d918',
 		'Content-Type': 'application/json'
 	}
 });
