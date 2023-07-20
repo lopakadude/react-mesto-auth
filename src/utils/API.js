@@ -95,7 +95,7 @@ class Api {
 }
 
 export const api = new Api({
-	baseUrl: 'https://api.express.lopakadude.nomoredomains.xyz',
+	baseUrl: 'http://api.express.lopakadude.nomoredomains.xyz',
 	headers: {
 		'Content-Type': 'application/json'
 	}

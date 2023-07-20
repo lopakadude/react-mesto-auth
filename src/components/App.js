@@ -8,7 +8,7 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import { api } from '../utils/API';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { AppContext} from '../contexts/AppContext';
+import { AppContext } from '../contexts/AppContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
@@ -33,25 +33,16 @@ function App() {
 	const [isInfoToolTipPopupOpen, setInfoToolTipPopupOpen] = useState(false);
 	const [email, setEmail] = useState('');
 
-
-
 	useEffect(() => {
-		api
-			.getUserInfo()
-			.then((data) => {
-				setCurrentUser(data);
-			})
-			.catch(console.error)
-	}, []);
-
-	useEffect(() => {
-		api
-			.getInitialCards()
-			.then((data) => {
-				setCards(data);
-			})
-			.catch(console.error)
-	}, [])
+		if (isLoggedIn) {
+			Promise.all([api.getUserInfo(), api.getInitialCards()])
+				.then(([user, cards]) => {
+					setCurrentUser(user.data);
+					setCards(cards.data);
+				})
+				.catch(console.error)
+		}
+	}, [isLoggedIn])
 
 	function handleEditAvatarClick() {
 		setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
@@ -84,35 +75,36 @@ function App() {
 	}
 
 
-function handleSubmit(request) {
-	setIsLoading(true);
-	request()
-		.then(closeAllPopups)
-		.catch(console.error)
-		.finally(() => setIsLoading(false));
-}
+	function handleSubmit(request) {
+		setIsLoading(true);
+		request()
+			.then(closeAllPopups)
+			.catch(console.error)
+			.finally(() => setIsLoading(false));
+	}
 
 
 	function handleUpdateUser({ name, about }) {
-			function makeRequest() {
-				return api.setUserInfo({ name: name, about: about }).then(setCurrentUser);
-			}
-			handleSubmit(makeRequest);
+		function makeRequest() {
+			return api.setUserInfo({ name: name, about: about }).then(setCurrentUser);
+		}
+		handleSubmit(makeRequest);
 	}
 
 	function handleUpdateAvatar(avatar) {
-			function makeRequest() {
-				return api.setChangeAvatar(avatar).then(setCurrentUser);
-			}
-			handleSubmit(makeRequest);
+		function makeRequest() {
+			return api.setChangeAvatar(avatar).then(setCurrentUser);
+		}
+		handleSubmit(makeRequest);
 	}
 
 	function handleAddPlaceSubmit({ name, link }) {
-			function makeRequest() {
-				return api.postNewCard({ name, link }).then((newCard) => {
-					setCards([newCard, ...cards])})
-			}
-			handleSubmit(makeRequest);
+		function makeRequest() {
+			return api.postNewCard({ name, link }).then((newCard) => {
+				setCards([newCard, ...cards])
+			})
+		}
+		handleSubmit(makeRequest);
 	}
 
 	function closeAllPopups() {
@@ -138,9 +130,9 @@ function handleSubmit(request) {
 		}
 	}, [navigate]);
 
-	function handleRegistrationSubmit({email, password}) {
+	function handleRegistrationSubmit({ email, password }) {
 		auth
-			.registration({email, password})
+			.registration({ email, password })
 			.then((res) => {
 				setIsSuccess(true);
 				navigate('/sign-in', { replace: true });
@@ -150,13 +142,13 @@ function handleSubmit(request) {
 				setIsSuccess(false);
 			})
 			.finally(() => {
-				setInfoToolTipPopupOpen(true) 
+				setInfoToolTipPopupOpen(true)
 			})
 	}
 
-	function handleLoginSubmit({email, password}) {
+	function handleLoginSubmit({ email, password }) {
 		auth
-			.login({email, password})
+			.login({ email, password })
 			.then(() => {
 				setIsLoggedIn(true);
 				setEmail(email);
@@ -166,22 +158,22 @@ function handleSubmit(request) {
 	}
 
 	function handleSignOut() {
-    localStorage.removeItem('jwt');
-    setIsLoggedIn(false);
+		localStorage.removeItem('jwt');
+		setIsLoggedIn(false);
 		navigate('/sign-in', { replace: true });
-  }
+	}
 
 
 	return (
-		<AppContext.Provider value={{isLoading, closeAllPopups}}>
+		<AppContext.Provider value={{ isLoading, closeAllPopups }}>
 			<CurrentUserContext.Provider value={currentUser}>
 				<div
 					className="page"
 				>
 					<Header
 						email={email}
-						isLoggedIn={isLoggedIn} 
-						onSignOut={handleSignOut}/>
+						isLoggedIn={isLoggedIn}
+						onSignOut={handleSignOut} />
 					<Routes>
 						<Route
 							path="/"
