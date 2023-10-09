@@ -27,4 +27,4 @@ npm install
 ```
 npm start
 ```
-
+ Проект доступен по ссылке: https://lopakadude.github.io/react-mesto-auth/
